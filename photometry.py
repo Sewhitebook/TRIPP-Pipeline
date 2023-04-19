@@ -37,12 +37,12 @@ while reference_count != reference_target: #indexes extracted sources by try num
     x = extracted_phot[attempt]['x']
     y = extracted_phot[attempt]['y']
     coord = pixel_to_skycoord(x, y, w).transform_to('icrs')
-    search = SDSS.query_crossid(coord, fields = ['ra', 'dec', 'modelMag_g', 'modelMagErr_g'], radius = 15*u.arcsec, region = False)
+    search = SDSS.query_crossid(coord, fields = ['ra', 'dec', 'psfMag_g', 'psfMagErr_g'], radius = 15*u.arcsec, region = False)
     if search: #if SDSS query returned results, continue
-        if search['modelMag_g'] < 14 and search['type'] == 'STAR':
+        if search['psfMag_g'] < 14 and search['type'] == 'STAR':
             reference_count += 1
-            reference.append([search['ra'], search['dec'], x, y, extracted_phot[attempt]['xmin'], extracted_phot[attempt]['xmax'], search['modelMag_g'], search['modelMagErr_g']]) #do we need to keep ra and dec?
-            print(search['ra', 'dec', 'modelMag_g'])
+            reference.append([search['ra'], search['dec'], x, y, extracted_phot[attempt]['xmin'], extracted_phot[attempt]['xmax'], search['psfMag_g'], search['psfMagErr_g']]) #do we need to keep ra and dec?
+            print(search['ra', 'dec', 'psfMag_g'])
     attempt +=1
 
 mags= []
