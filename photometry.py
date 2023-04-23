@@ -16,7 +16,7 @@ from photutils.aperture import aperture_photometry
 from photutils import centroids, CircularAperture
 
 
-files = sorted(glob.glob("/Users/lucaangeleri/Documents/LCO/sec32/*.fz"))
+files = sorted(glob.glob("F:/SDI/sec17/*.fz"))
 hdus = [fits.open(f) for f in files] #opens fits files so we can access header data
 data = [h[1].data for h in hdus] #array for image data
 aligned = [aa.register(i, data[0])[0] for i in data[0:]]
@@ -46,10 +46,8 @@ for pnt in reference:
         print(mag_instrumental, pnt[6][0], pnt[7][0], pnt[0][0], pnt[1][0])
         plt.scatter(pnt[2], pnt[3], facecolors='none', edgecolors='r')
 
-
-
-Minst = [m[0] for m in mags]
-Mpsf =  [m[1] for m in mags]
+Minst = [m[0] for m in mags[::2]]
+Mpsf =  [m[1] for m in mags[::2]]
 
 p = np.polyfit(Minst, Mpsf, deg= 1)
 x = np.arange(-15, 15)
@@ -57,15 +55,35 @@ y = [p[0]*i + p[1] for i in x]
 print(p[0], p[1] )
 
 
-plt.imshow(data[0], cmap = 'viridis', norm = LogNorm(vmin = 137, vmax = 320), origin='lower')
+plt.imshow(data[0], cmap = 'viridis', norm = LogNorm(vmin = 1, vmax = 100), origin='lower')
 plt.show()
 
 plt.plot(x, y)
-for pnt in mags:
-
+for pnt in mags[::2]:
     plt.errorbar(pnt[0], pnt[1], yerr= pnt[2], marker  = 'o', linestyle ='')
     #plt.scatter(pnt[0], pnt[1])
 plt.show()
+
+
+res = []
+for pnt in mags[1::2]:
+    mag_corr = p[0]*pnt[0] + p[1]
+    res.append(mag_corr-pnt[1])
+    plt.scatter(mag_corr, pnt[1])
+
+print(np.average(res))
+plt.show()
+
+for i,pnt in enumerate(mags[1::2]):
+    mag_corr = p[0] * pnt[0] + p[1]
+    plt.scatter(i, mag_corr, color = 'r')
+    plt.scatter(i, pnt[1], color = 'b')
+
+plt.show()
+
+plt.hist(res)
+plt.show()
+
 
 """
 
