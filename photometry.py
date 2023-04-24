@@ -24,6 +24,7 @@ template = np.mean(aligned, axis = 0)
 
 bkg_phot = sep.Background(template)
 extracted_phot = sep.extract(template - bkg_phot.back(),  bkg_phot.globalrms*3, minarea =20, segmentation_map=False) #find sources in image
+print(len(extracted_phot))
 w = WCS(hdus[0][1].header) #WCS matrix object
 
 reference = []
