@@ -36,6 +36,9 @@ for i, dir in enumerate(files):
     template = np.median(aligned, axis = 0) #creates median value template
     w = WCS(hdus[0][1].header) #WCS matrix object, used to transform pixel values to RA-DEC coordinates
 
+bkg_phot = sep.Background(template)
+extracted_phot = sep.extract(template - bkg_phot.back(),  bkg_phot.globalrms*3, minarea =20, segmentation_map=False) #find sources in image
+w = WCS(hdus[0][1].header) #WCS matrix object
 
     #Fills out set object
     set['images'] = aligned
